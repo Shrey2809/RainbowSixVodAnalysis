@@ -14,9 +14,10 @@ import pafy
 import vlc
 import cv2
 import os
+from pytube import YouTube
 
 # Change path for pytesseract to where you have Tesseract-OCR folder. Included in package files to run and analyse. 
-path = os.getcwd() + "\\Tesseract-OCR\\tesseract.exe"
+path = "C:/Program Files (x86)/Tesseract-OCR/tesseract.exe"
 pt.pytesseract.tesseract_cmd = r"%s"%path
 strip_string = '\n\x0c/ |\n\n\'‘ ¢-|/_ '
 
@@ -97,12 +98,21 @@ def process_image(image):
 
 # Main body of the program
 if __name__ == '__main__':
+
+    def get_best_stream_url(url):
+        yt = YouTube(url)
+        best_stream = yt.streams.get_highest_resolution()
+        return best_stream.url
+
+    # Example usage:
+    video_url = get_game_url()
+    best_stream_url = get_best_stream_url(video_url)
+    print("Best stream URL:", best_stream_url)
+    vod = cv2.VideoCapture(best_stream_url)
+
+
     
-    # Get the video loaded into cv2 to scan through it
-    video = get_game_url()
-    vod   = cv2.VideoCapture(video.url)
-    
-    # Video attributes
+    # # Video attributes
     width  = int(vod.get(3))
     height = int(vod.get(4))
     fps    = int(vod.get(5))
@@ -112,7 +122,7 @@ if __name__ == '__main__':
     team1, team2 = get_team_names()
     windowTitle = "VOD Analysis for %s vs %s" %(team1,team2)
 
-    # Initialising variables 
+    # # Initialising variables 
     y  = 68 
     x  = 135
     yh = 318
